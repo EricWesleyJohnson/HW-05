@@ -190,31 +190,32 @@ def main():  # Plain stress approximation
     cc = [-1]*N
 
     # Strength Ratios for Tsai-Wu Criteria
-    R_1 = [0]*N
+    R_1_array = [0]*N
     for i in range(N):
-        R_1[i] = (-b[i]+math.sqrt((b[i]**2)-4*a[i]*cc[i])) / (2*a[i])
+        R_1_array[i] = (-b[i]+math.sqrt((b[i]**2)-4*a[i]*cc[i])) / (2*a[i])
 
     R_2 = [0] * N
     for i in range(N):
         R_2[i] = (-b[i] - math.sqrt((b[i] ** 2) - 4 * a[i] * cc[i])) / (2 * a[i])
 
-    R_TW = [0]*N
+    R_1 = [0]*N
     for i in range(N):
-        R_TW[i] = min(R_1[i], R_2[i], key=abs)
-
-    R_TW_min = min(R_TW, key=abs)
+        R_1[i] = R_1_array[i].tolist()
+    R_TW = min(R_1)
 
     # Tsai-Wu critical loads
-    N_TW_xxc = R_TW_min * stress_resultant[0]
-    M_TW_xxc = R_TW_min * stress_resultant[4]
+    N_TW_xxc = R_TW * stress_resultant[0]
+    M_TW_xxc = R_TW * stress_resultant[4]
 
     # Printing the Strength Ratio for Max Stress Failure
     print("This is the Strength Ratio for first ply failure under Max Stress Failure Criterion:")
     print("R\N{LATIN SUBSCRIPT SMALL LETTER M}\N{LATIN SUBSCRIPT SMALL LETTER S} = " + str(round(min(R_MS, key=abs), 2)))
+    print("# of ply that fails first: " + str(R_MS.index(min(R_MS)) + 1))
 
     # Printing the Strength Ratio for Tsai-Wu Failure
     print("\nThis is the Strength Ratio for the first ply failure under Tsai-Wu Failure Criterion:")
     print("R_TW = " + str(np.round(abs(min(R_TW, key=abs)), 2)))
+    print("# of ply that fails first: " + str(R_1.index(min(R_1)) + 1))
 
     # Printing the Critical loads
     print("\nThese are the Critical Loads for first ply failure:")
